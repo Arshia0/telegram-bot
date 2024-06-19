@@ -1,10 +1,14 @@
 
-from telegram import Update, ParseMode
+
+from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
+# توکن بات تلگرام خود را اینجا وارد کنید
 TOKEN = '7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60'
+
 def start(update: Update, context: CallbackContext) -> None:
     """ارسال پیام خوش آمدگویی و معرفی دستورات به کاربر."""
+    print("دستور /start دریافت شد")
     update.message.reply_text(
         "سلام! به بات من خوش آمدید. "
         "از دستورات زیر می‌توانید استفاده کنید:\n"
@@ -15,6 +19,7 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def info(update: Update, context: CallbackContext) -> None:
     """ارسال مشخصات فردی به کاربر."""
+    print("دستور /info دریافت شد")
     update.message.reply_text(
         "مشخصات فردی:\n"
         "عرشیا افشار\n"
@@ -25,6 +30,7 @@ def info(update: Update, context: CallbackContext) -> None:
 
 def contact(update: Update, context: CallbackContext) -> None:
     """ارسال لینک‌های ارتباطی به کاربر."""
+    print("دستور /contact دریافت شد")
     update.message.reply_text(
         "لینک‌های ارتباطی:\n"
         "Gmail: arshiaafshar7@gmail.com\n"
@@ -35,6 +41,7 @@ def contact(update: Update, context: CallbackContext) -> None:
 
 def resume(update: Update, context: CallbackContext) -> None:
     """ارسال رزومه به کاربر."""
+    print("دستور /resume دریافت شد")
     update.message.reply_text(
         "رزومه:\n"
         "به زودی پیوست داده می‌شود"
