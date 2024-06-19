@@ -1,10 +1,10 @@
-from telegram import Update, Bot, ParseMode
+
+from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 TOKEN = '7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60'
-
-
 def start(update: Update, context: CallbackContext) -> None:
+    """ارسال پیام خوش آمدگویی و معرفی دستورات به کاربر."""
     update.message.reply_text(
         "سلام! به بات من خوش آمدید. "
         "از دستورات زیر می‌توانید استفاده کنید:\n"
@@ -14,6 +14,7 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 def info(update: Update, context: CallbackContext) -> None:
+    """ارسال مشخصات فردی به کاربر."""
     update.message.reply_text(
         "مشخصات فردی:\n"
         "عرشیا افشار\n"
@@ -23,8 +24,9 @@ def info(update: Update, context: CallbackContext) -> None:
     )
 
 def contact(update: Update, context: CallbackContext) -> None:
+    """ارسال لینک‌های ارتباطی به کاربر."""
     update.message.reply_text(
-        "لینک های ارتباطی:\n"
+        "لینک‌های ارتباطی:\n"
         "Gmail: arshiaafshar7@gmail.com\n"
         "Telegram: @asshiiv\n"
         "Instagram: @asshiiv\n"
@@ -32,25 +34,26 @@ def contact(update: Update, context: CallbackContext) -> None:
     )
 
 def resume(update: Update, context: CallbackContext) -> None:
+    """ارسال رزومه به کاربر."""
     update.message.reply_text(
         "رزومه:\n"
-        "به زودی پیوست داده میشود"
+        "به زودی پیوست داده می‌شود"
     )
 
 def main() -> None:
+    """راه‌اندازی بات تلگرام."""
     updater = Updater(TOKEN)
 
     dispatcher = updater.dispatcher
 
+    # تعریف هندلرهای دستورات
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("info", info))
     dispatcher.add_handler(CommandHandler("contact", contact))
     dispatcher.add_handler(CommandHandler("resume", resume))
 
-    updater.start_webhook(listen="0.0.0.0",
-                          port=8443,
-                          url_path=TOKEN,
-                          webhook_url=f"https://your-domain.com/{TOKEN}")
+    # شروع polling
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
