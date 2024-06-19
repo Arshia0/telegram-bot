@@ -3,6 +3,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext
 
 TOKEN = '7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60'
 
+
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
         "سلام! به بات من خوش آمدید. "
@@ -46,7 +47,10 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("contact", contact))
     dispatcher.add_handler(CommandHandler("resume", resume))
 
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=8443,
+                          url_path=TOKEN,
+                          webhook_url=f"https://your-domain.com/{TOKEN}")
     updater.idle()
 
 if __name__ == '__main__':
