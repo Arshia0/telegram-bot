@@ -1,53 +1,54 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# توکن ربات خود را جایگزین کنید
+# توکن ربات و رمز عبور
 TOKEN = "7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60"
 PASSWORD = "122333ashi"
 
 # متغیری برای ذخیره حالت درخواست رمز عبور
 user_states = {}
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("سلام! این ربات تلگرام شما است.")
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("سلام! خوش آمدید. از دستور /command1، /command2، /command3، یا /command4 استفاده کنید.")
 
-async def command1(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("عرشیا افشار\nمتولد ۱۳۸۱/۰۱/۲۴\nساکن شهر: همدان / اصفهان\nتحصیلات: کارشناسی برق (گرایش بیوالکتریک)")
+def personal_info(update: Update, context: CallbackContext):
+    update.message.reply_text("عرشیا افشار\nمتولد ۱۳۸۱/۰۱/۲۴\nساکن شهر: همدان / اصفهان\nتحصیلات: کارشناسی برق (گرایش بیوالکتریک)")
 
-async def command2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("gmai: arshiaafshar7@gmail.com\ntelegram: @asshiiv\ninstagram: @asshiiv\nphone-number: 09185842903")
+def contact_links(update: Update, context: CallbackContext):
+    update.message.reply_text("ایمیل: arshiaafshar7@gmail.com\nتلگرام: @asshiiv\nاینستاگرام: @asshiiv\nشماره تماس: 09185842903")
 
-async def command3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.message.from_user.id
-    user_states[user_id] = "waiting_for_password"
-    await update.message.reply_text("لطفا رمز عبور خود را وارد کنید:")
+def resume(update: Update, context: CallbackContext):
+    chat_id = update.message.chat_id
+    user_states[chat_id] = "awaiting_password"
+    update.message.reply_text("لطفاً رمز عبور را وارد کنید:")
 
-async def handle_password(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.message.from_user.id
-    if user_states.get(user_id) == "waiting_for_password":
+def password_check(update: Update, context: CallbackContext):
+    chat_id = update.message.chat_id
+    if user_states.get(chat_id) == "awaiting_password":
         if update.message.text == PASSWORD:
-            await update.message.reply_text("رمز عبور صحیح است. در حال ارسال رزومه...")
-            try:
-                await update.message.reply_document(open('resume.pdf', 'rb'))
-            except Exception as e:
-                await update.message.reply_text(f"خطا در ارسال رزومه: {e}")
+            update.message.reply_document(document=open("resume.pdf", "rb"))
+            update.message.reply_text("رزومه ارسال شد.")
         else:
-            await update.message.reply_text("رمز عبور نادرست است. لطفا دوباره تلاش کنید.")
-        user_states[user_id] = None
+            update.message.reply_text("رمز عبور اشتباه است.")
+        user_states.pop(chat_id, None)
 
-async def command4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
+def unknown(update: Update, context: CallbackContext):
+    update.message.reply_text("دستور ناشناخته است.")
 
-def main() -> None:
-    application = ApplicationBuilder().token(TOKEN).build()
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("command1", command1))
-    application.add_handler(CommandHandler("command2", command2))
-    application.add_handler(CommandHandler("command3", command3))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_password))
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("command1", personal_info))
+    dp.add_handler(CommandHandler("command2", contact_links))
+    dp.add_handler(CommandHandler("command3", resume))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, password_check))
 
-    application.run_polling()
+    dp.add_handler(MessageHandler(Filters.command, unknown))
+
+    updater.start_polling()
+    updater.idle()
 
 if __name__ == '__main__':
     main()
