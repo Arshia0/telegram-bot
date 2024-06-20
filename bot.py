@@ -1,36 +1,37 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Defaults
-import httpx
+from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # توکن ربات خود را جایگزین کنید
 TOKEN = "7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("سلام! این ربات تلگرام شما است.")
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("سلام! این ربات تلگرام شما است.")
 
-async def command1(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("عرشیا افشار\nمتولد ۱۳۸۱/۰۱/۲۴\nساکن شهر: همدان / اصفهان\nتحصیلات: کارشناسی برق (گرایش بیوالکتریک)")
+def command1(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("عرشیا افشار\nمتولد ۱۳۸۱/۰۱/۲۴\nساکن شهر: همدان / اصفهان\nتحصیلات: کارشناسی برق (گرایش بیوالکتریک)")
 
-async def command2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("gmai: arshiaafshar7@gmail.com\ntelegram: @asshiiv\ninstagram: @asshiiv\nphone-number: 09185842903")
+def command2(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("gmai: arshiaafshar7@gmail.com\ntelegram: @asshiiv\ninstagram: @asshiiv\nphone-number: 09185842903")
 
-async def command3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("رزومه:\nبه زودی پیوست داده می‌شود")
+def command3(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("رزومه:\nبه زودی پیوست داده می‌شود")
 
-async def command4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
+def command4(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
 
 def main() -> None:
-    client = httpx.AsyncClient(timeout=httpx.Timeout(20.0, connect=10.0))
-    application = ApplicationBuilder().token(TOKEN).http_version("1.1").http_client(client).build()
+    updater = Updater(TOKEN, use_context=True)
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("command1", command1))
-    application.add_handler(CommandHandler("command2", command2))
-    application.add_handler(CommandHandler("command3", command3))
-    application.add_handler(CommandHandler("command4", command4))
+    dispatcher = updater.dispatcher
 
-    application.run_polling()
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("command1", command1))
+    dispatcher.add_handler(CommandHandler("command2", command2))
+    dispatcher.add_handler(CommandHandler("command3", command3))
+    dispatcher.add_handler(CommandHandler("command4", command4))
+
+    updater.start_polling()
+    updater.idle()
 
 if __name__ == "__main__":
     main()
