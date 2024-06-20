@@ -1,66 +1,34 @@
-
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-# توکن بات تلگرام خود را اینجا وارد کنید
-TOKEN = '7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60'
+# توکن ربات خود را جایگزین کنید
+TOKEN = "7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60"
 
-def start(update: Update, context: CallbackContext) -> None:
-    """ارسال پیام خوش آمدگویی و معرفی دستورات به کاربر."""
-    print("دستور /start دریافت شد")
-    update.message.reply_text(
-        "سلام! به بات من خوش آمدید. "
-        "از دستورات زیر می‌توانید استفاده کنید:\n"
-        "/info - مشخصات فردی\n"
-        "/contact - لینک های ارتباطی\n"
-        "/resume - رزومه"
-    )
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("سلام! این ربات تلگرام شما است.")
 
-def info(update: Update, context: CallbackContext) -> None:
-    """ارسال مشخصات فردی به کاربر."""
-    print("دستور /info دریافت شد")
-    update.message.reply_text(
-        "مشخصات فردی:\n"
-        "عرشیا افشار\n"
-        "متولد ۱۳۸۱/۰۱/۲۴\n"
-        "ساکن شهر: همدان / اصفهان\n"
-        "تحصیلات: کارشناسی برق (گرایش بیوالکتریک)"
-    )
+async def command1(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("عرشیا افشار\nمتولد ۱۳۸۱/۰۱/۲۴\nساکن شهر: همدان / اصفهان\nتحصیلات: کارشناسی برق (گرایش بیوالکتریک)")
 
-def contact(update: Update, context: CallbackContext) -> None:
-    """ارسال لینک‌های ارتباطی به کاربر."""
-    print("دستور /contact دریافت شد")
-    update.message.reply_text(
-        "لینک‌های ارتباطی:\n"
-        "Gmail: arshiaafshar7@gmail.com\n"
-        "Telegram: @asshiiv\n"
-        "Instagram: @asshiiv\n"
-        "Phone Number: 09185842903"
-    )
+async def command2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("gmai: arshiaafshar7@gmail.com\ntelegram: @asshiiv\ninstagram: @asshiiv\nphone-number: 09185842903")
 
-def resume(update: Update, context: CallbackContext) -> None:
-    """ارسال رزومه به کاربر."""
-    print("دستور /resume دریافت شد")
-    update.message.reply_text(
-        "رزومه:\n"
-        "به زودی پیوست داده می‌شود"
-    )
+async def command3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("رزومه:\nبه زودی پیوست داده می‌شود")
+
+async def command4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
 
 def main() -> None:
-    """راه‌اندازی بات تلگرام."""
-    updater = Updater(TOKEN)
+    application = ApplicationBuilder().token(TOKEN).build()
 
-    dispatcher = updater.dispatcher
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("command1", command1))
+    application.add_handler(CommandHandler("command2", command2))
+    application.add_handler(CommandHandler("command3", command3))
+    application.add_handler(CommandHandler("command4", command4))
 
-    # تعریف هندلرهای دستورات
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("info", info))
-    dispatcher.add_handler(CommandHandler("contact", contact))
-    dispatcher.add_handler(CommandHandler("resume", resume))
+    application.run_polling()
 
-    # شروع polling
-    updater.start_polling()
-    updater.idle()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
