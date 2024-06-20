@@ -1,5 +1,6 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Defaults
+import httpx
 
 # توکن ربات خود را جایگزین کنید
 TOKEN = "7211395396:AAGNhfMUDSJdRlOB5DKoH-tjvyWuBotgM60"
@@ -20,10 +21,8 @@ async def command4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
 
 def main() -> None:
-    application = ApplicationBuilder().token(TOKEN).request_kwargs({
-        'read_timeout': 20,
-        'connect_timeout': 10
-    }).build()
+    client = httpx.AsyncClient(timeout=httpx.Timeout(20.0, connect=10.0))
+    application = ApplicationBuilder().token(TOKEN).http_version("1.1").http_client(client).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("command1", command1))
