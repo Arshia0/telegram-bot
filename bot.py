@@ -20,7 +20,10 @@ async def command4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text("پلی لیست آهنگ:\nپلی لیستی از آهنگ‌ها به زودی اضافه خواهد شد")
 
 def main() -> None:
-    application = ApplicationBuilder().token(TOKEN).build()
+    application = ApplicationBuilder().token(TOKEN).request_kwargs({
+        'connect_timeout': 10,  # افزایش زمان تایم‌اوت
+        'read_timeout': 20     # افزایش زمان تایم‌اوت
+    }).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("command1", command1))
